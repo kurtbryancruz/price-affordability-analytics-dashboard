@@ -54,6 +54,10 @@ function normalizeRegion(region) {
   // BARMM rows in the income CSV have a long footnote-laden name
   if (r.startsWith("BARMM")) return "BARMM";
 
+  // Strip descriptive suffix for numbered regions: "REGION I - ILOCOS REGION" → "REGION I"
+  // Safe: IV-A / IV-B use a hyphen without spaces and are already resolved by the map above.
+  if (r.includes(" - ")) return r.split(" - ")[0];
+
   return r;
 }
 
@@ -197,7 +201,13 @@ function cleanFoodPrices(inputPath, outputPath) {
   const zscores = computeZScore(prices);
   data = data.map((d, i) => ({ ...d, price_zscore: zscores[i] }));
 
-  // 6. Export
+  // 6. Drop irrelevant columns before export
+  const KEEP_COLS = ["date", "year", "region", "category", "commodity", "unit", "pricetype", "currency", "price", "price_zscore"];
+  data = data.map((row) =>
+    Object.fromEntries(KEEP_COLS.filter((k) => k in row).map((k) => [k, row[k]]))
+  );
+
+  // 7. Export
   const csv = stringify(data, { header: true });
   fs.writeFileSync(outputPath, csv);
   console.log(`✓ Food prices → ${outputPath}  (${data.length} rows)`);
