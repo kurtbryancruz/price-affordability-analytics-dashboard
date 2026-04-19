@@ -27,7 +27,7 @@ export default function Sidebar() {
           <span className="brand-dot" />
           <span className="brand-dot" />
         </div>
-        <span className="brand-name">FoodAnalytics</span>
+        <span className="brand-name">AffordaScope</span>
       </div>
 
       <nav className="sidebar-nav">
@@ -48,12 +48,16 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      <div className="sidebar-footer">
-        <div className="user-avatar">K</div>
-        <div className="user-info">
-          <p className="user-name">Analytics User</p>
-          <p className="user-role">Data Analyst</p>
-        </div>
+      <div className="sidebar-footer team-footer">
+        <p className="team-label">Pampamilyang IT</p>
+        <ul className="team-list">
+          <li>Cruz, Kurt Bryan</li>
+          <li>Dialogo, Fritz Gerald</li>
+          <li>Dimal, Lancer Johndrix</li>
+          <li>Mayagma, Guillmar</li>
+          <li>Nilo, Harry</li>
+          <li>Paghunasan, Jeroen Gil</li>
+        </ul>
       </div>
     </aside>
   )

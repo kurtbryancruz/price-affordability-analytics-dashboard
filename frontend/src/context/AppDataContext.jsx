@@ -5,6 +5,13 @@ const API_BASE = "http://localhost:3001/api"
 export const peso    = (v) => `₱${Number(v).toFixed(2)}`
 export const pesoAxis = (v) => `₱${Number(v).toFixed(0)}`
 
+// NCR / CAR / BARMM arrive title-cased ("Ncr", "Car", "Barmm") from the API because
+// the backend's generic title-case path runs on already-abbreviated DB values.
+// Fix casing here — once, at the data boundary — so every consumer gets correct display.
+const ACRONYMS = new Set(['ncr', 'car', 'barmm'])
+const fixRegion  = (name) => (name && ACRONYMS.has(name.toLowerCase()) ? name.toUpperCase() : name)
+const fixRegions = (rows) => rows.map((r) => ({ ...r, region: fixRegion(r.region) }))
+
 const AppDataContext = createContext(null)
 
 function useTheme() {
@@ -23,9 +30,10 @@ export function AppDataProvider({ children }) {
   const [priceByRegion, setPriceByRegion] = useState([])
   const [priceTrend, setPriceTrend]       = useState([])
   const [affordability, setAffordability] = useState([])
-  const [incomeByRegion, setIncomeByRegion] = useState([])
-  const [incomeTrend, setIncomeTrend]     = useState([])
-  const [error, setError]                 = useState(null)
+  const [incomeByRegion, setIncomeByRegion]       = useState([])
+  const [incomeTrend, setIncomeTrend]             = useState([])
+  const [categoryBreakdown, setCategoryBreakdown] = useState([])
+  const [error, setError]                         = useState(null)
   const [loading, setLoading]             = useState(true)
   const [selectedRegion, setSelectedRegion] = useState('All')
   const [selectedYear, setSelectedYear]   = useState('All')
@@ -46,16 +54,18 @@ export function AppDataProvider({ children }) {
           fetch(`${API_BASE}/affordability-by-region`),
           fetch(`${API_BASE}/income-by-region`),
           fetch(`${API_BASE}/income-trend`),
+          fetch(`${API_BASE}/category-breakdown`),
         ])
         if (responses.some((r) => !r.ok)) throw new Error("One or more API requests failed")
-        const [kpisData, regionData, trendData, affordData, incomeRegionData, incomeTrendData] =
+        const [kpisData, regionData, trendData, affordData, incomeRegionData, incomeTrendData, categoryData] =
           await Promise.all(responses.map((r) => r.json()))
         setKpis(kpisData)
-        setPriceByRegion(regionData)
+        setPriceByRegion(fixRegions(regionData))
         setPriceTrend(trendData)
-        setAffordability(affordData)
-        setIncomeByRegion(incomeRegionData)
+        setAffordability(fixRegions(affordData))
+        setIncomeByRegion(fixRegions(incomeRegionData))
         setIncomeTrend(incomeTrendData)
+        setCategoryBreakdown(categoryData)
       } catch (err) {
         setError(err.message)
       } finally {
@@ -108,7 +118,7 @@ export function AppDataProvider({ children }) {
   return (
     <AppDataContext.Provider value={{
       dark, toggleDark,
-      kpis, priceByRegion, priceTrend, affordability, incomeByRegion, incomeTrend,
+      kpis, priceByRegion, priceTrend, affordability, incomeByRegion, incomeTrend, categoryBreakdown,
       loading, error,
       selectedRegion, setSelectedRegion,
       selectedYear, setSelectedYear,

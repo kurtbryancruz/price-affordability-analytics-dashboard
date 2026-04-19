@@ -153,6 +153,21 @@ app.get("/api/price-by-region", async (_req, res) => {
   }
 });
 
+app.get("/api/category-breakdown", async (_req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT category, AVG(price::numeric) AS avg_price
+      FROM food_prices
+      GROUP BY category
+      ORDER BY avg_price DESC
+    `);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("category-breakdown error:", err);
+    res.status(500).json({ error: "Failed to load category breakdown", details: err.message });
+  }
+});
+
 app.get("/api/price-trend", async (_req, res) => {
   try {
     const result = await pool.query(`

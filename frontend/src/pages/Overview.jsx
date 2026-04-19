@@ -1,9 +1,19 @@
+import { useMemo } from 'react'
 import {
   BarChart, Bar, LineChart, Line,
+  PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
 } from 'recharts'
 import { useAppData, peso, pesoAxis } from '../context/AppDataContext'
 import PageLayout from '../components/PageLayout'
+
+// One colour per food category — maps to design-token palette
+const CATEGORY_COLORS = {
+  'meat, fish and eggs':   '#ef4444',
+  'vegetables and fruits': '#10b981',
+  'pulses and nuts':       '#f59e0b',
+  'cereals and tubers':    '#4361ee',
+}
 import KpiCard from '../components/KpiCard'
 import ChartCard from '../components/ChartCard'
 import RightPanel from '../components/RightPanel'
@@ -12,12 +22,20 @@ export default function Overview() {
   const {
     kpis, derivedKpis,
     filteredPriceByRegion, filteredAffordability, filteredPriceTrend,
+    categoryBreakdown,
     regionOptions, yearOptions,
     selectedRegion, setSelectedRegion,
     selectedYear, setSelectedYear,
     insights,
     dark, GRID, AXIS, TOOLTIP,
   } = useAppData()
+
+  // Recharts Pie requires numeric `value` and reads `name` for the Legend —
+  // the API returns avg_price as a string and uses `category` as the key.
+  const categoryData = useMemo(
+    () => categoryBreakdown.map((d) => ({ name: d.category, value: Number(d.avg_price) })),
+    [categoryBreakdown]
+  )
 
   return (
     <PageLayout
@@ -41,27 +59,60 @@ export default function Overview() {
         <KpiCard label="Most Affordable" value={derivedKpis.mostAffordable}                    icon="★" accentClass="accent-amber" />
       </section>
 
-      <ChartCard
-        title="Price Trend Over Time"
-        subtitle={selectedYear !== 'All' ? `Year: ${selectedYear}` : 'All years'}
-        fullWidth
-      >
-        <ResponsiveContainer width="100%" height={290}>
-          <LineChart data={filteredPriceTrend} margin={{ top: 8, right: 16, left: 0, bottom: 8 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke={GRID} />
-            <XAxis dataKey="year" tick={{ fill: AXIS, fontSize: 12 }} axisLine={false} tickLine={false} />
-            <YAxis tickFormatter={pesoAxis} tick={{ fill: AXIS, fontSize: 12 }} width={60} axisLine={false} tickLine={false} />
-            <Tooltip formatter={(v) => [peso(v), 'Avg Price']} contentStyle={TOOLTIP} />
-            <Legend wrapperStyle={{ color: AXIS, fontSize: 12 }} />
-            <Line
-              type="monotone" dataKey="avg_price" name="Avg Price"
-              stroke="#4361ee" strokeWidth={2.5}
-              dot={{ r: 3.5, fill: '#4361ee', strokeWidth: 0 }}
-              activeDot={{ r: 5, fill: '#4361ee', stroke: dark ? '#19202e' : '#fff', strokeWidth: 2 }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </ChartCard>
+      <div className="trend-row">
+        <ChartCard
+          title="Price Trend Over Time"
+          subtitle={selectedYear !== 'All' ? `Year: ${selectedYear}` : 'All years'}
+        >
+          <ResponsiveContainer width="100%" height={260}>
+            <LineChart data={filteredPriceTrend} margin={{ top: 8, right: 16, left: 0, bottom: 8 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke={GRID} />
+              <XAxis dataKey="year" tick={{ fill: AXIS, fontSize: 12 }} axisLine={false} tickLine={false} />
+              <YAxis tickFormatter={pesoAxis} tick={{ fill: AXIS, fontSize: 12 }} width={60} axisLine={false} tickLine={false} />
+              <Tooltip formatter={(v) => [peso(v), 'Avg Price']} contentStyle={TOOLTIP} />
+              <Legend wrapperStyle={{ color: AXIS, fontSize: 12 }} />
+              <Line
+                type="monotone" dataKey="avg_price" name="Avg Price"
+                stroke="#4361ee" strokeWidth={2.5}
+                dot={{ r: 3.5, fill: '#4361ee', strokeWidth: 0 }}
+                activeDot={{ r: 5, fill: '#4361ee', stroke: dark ? '#19202e' : '#fff', strokeWidth: 2 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </ChartCard>
+
+        <ChartCard title="Category Breakdown" subtitle="Avg price per food category">
+          <ResponsiveContainer width="100%" height={260}>
+            <PieChart>
+              <Pie
+                data={categoryData}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="45%"
+                innerRadius="38%"
+                outerRadius="62%"
+                paddingAngle={3}
+              >
+                {categoryData.map((entry) => (
+                  <Cell
+                    key={entry.name}
+                    fill={CATEGORY_COLORS[entry.name] ?? '#94a3b8'}
+                  />
+                ))}
+              </Pie>
+              <Tooltip
+                formatter={(v, name) => [peso(v), name]}
+                contentStyle={TOOLTIP}
+              />
+              <Legend
+                formatter={(value) => value.charAt(0).toUpperCase() + value.slice(1)}
+                wrapperStyle={{ color: AXIS, fontSize: 11, paddingTop: 8 }}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        </ChartCard>
+      </div>
 
       <div className="bottom-row">
         <ChartCard

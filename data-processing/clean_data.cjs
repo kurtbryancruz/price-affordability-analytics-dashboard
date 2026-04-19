@@ -42,11 +42,19 @@ function normalizeRegion(region) {
     "AUTONOMOUS REGION IN MUSLIM MINDANAO":            "BARMM",
     // Aliases present in income CSV pivot rows
     "CAR - CORDILLERA ADMINISTRATIVE REGION":          "CAR",
-    "REGION IVA - CALABARZON":                         "Region IV-A",
-    "MIMAROPA REGION":                                 "Region IV-B",
+    "REGION IVA - CALABARZON":                         "REGION IV-A",
+    "MIMAROPA REGION":                                 "REGION IV-B",
     // Aliases present in food_prices admin1 column
-    "MIMAROPA":                                        "Region IV-B",
-    "CALABARZON":                                      "Region IV-A",
+    "MIMAROPA":                                        "REGION IV-B",
+    "CALABARZON":                                      "REGION IV-A",
+    // Enforce uppercase for abbreviations / short codes passed in directly (any input casing)
+    "NCR":                                             "NCR",
+    "CAR":                                             "CAR",
+    "BARMM":                                           "BARMM",
+    "REGION IV-A":                                     "REGION IV-A",
+    "REGION IV-B":                                     "REGION IV-B",
+    // CARAGA is the colloquial name; canonical output is the numbered form
+    "CARAGA":                                          "REGION XIII",
   };
 
   if (map[r]) return map[r];
