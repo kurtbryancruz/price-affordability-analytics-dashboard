@@ -50,6 +50,36 @@ price-affordability-analytics-dashboard/
 
 ---
 
+## Database Schema
+
+### `food_prices`
+
+| Column | Type | Description |
+|---|---|---|
+| `id` | `SERIAL` | Primary key, auto-incremented |
+| `date` | `DATE` | Full date of the price observation |
+| `year` | `INT` | Extracted year, used as the primary time dimension |
+| `region` | `TEXT` | Philippine administrative region (e.g., NCR, Region IV-A, BARMM) |
+| `category` | `TEXT` | Food group (e.g., *meat, fish and eggs*; *cereals and tubers*) |
+| `commodity` | `TEXT` | Specific food item (e.g., rice, pork, tomatoes) |
+| `unit` | `TEXT` | Unit of measure (e.g., kg, piece) |
+| `pricetype` | `TEXT` | Retail or wholesale designation |
+| `currency` | `TEXT` | Currency of the price value (PHP) |
+| `price` | `NUMERIC` | Observed retail price |
+| `price_zscore` | `NUMERIC` | Z-score normalized price for outlier detection and cross-commodity comparison |
+
+### `regional_income`
+
+| Column | Type | Description |
+|---|---|---|
+| `id` | `SERIAL` | Primary key, auto-incremented |
+| `region` | `TEXT` | Philippine administrative region, matches `food_prices.region` for joins |
+| `year` | `INT` | PSA FIES survey year (2018, 2021, or 2023) |
+| `avg_income_thousands` | `NUMERIC` | Average household income in PHP thousands |
+| `income_zscore` | `NUMERIC` | Z-score normalized income for cross-regional comparison |
+
+---
+
 ## Setup
 
 ### 1. Clone the repository
