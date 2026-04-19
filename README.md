@@ -45,7 +45,8 @@ price-affordability-analytics-dashboard/
 │   ├── clean_data.cjs     # Cleans and normalizes raw PSA CSV files
 │   └── load_data.cjs      # Loads cleaned CSVs into PostgreSQL
 └── data/
-    └── cleaned/           # Output of clean_data.cjs (not committed)
+    └── cleaned/           # Output of clean_data.cjs 
+    └── raw/               # raw csv file 
 ```
 
 ---
