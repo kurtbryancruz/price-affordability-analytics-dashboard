@@ -5,7 +5,7 @@ import KpiCard from '../components/KpiCard'
 import ChartCard from '../components/ChartCard'
 
 export default function Reports() {
-  const { priceByRegion, priceTrend, affordability, incomeByRegion } = useAppData()
+  const { priceByRegion, priceTrend, affordability, incomeByRegion, incomeTrend } = useAppData()
 
   const summary = useMemo(() => {
     if (!priceTrend.length || !priceByRegion.length || !affordability.length) return null
@@ -14,28 +14,43 @@ export default function Reports() {
     const lastYear  = priceTrend[priceTrend.length - 1]
     const priceChange = ((Number(lastYear.avg_price) - Number(firstYear.avg_price)) / Number(firstYear.avg_price)) * 100
 
+    const sortedIncomeTrend = [...incomeTrend].sort((a, b) => Number(a.year) - Number(b.year))
+    const firstIncomeYear   = sortedIncomeTrend[0] ?? null
+    const lastIncomeYear    = sortedIncomeTrend[sortedIncomeTrend.length - 1] ?? null
+    const incomeChange = firstIncomeYear && lastIncomeYear
+      ? ((Number(lastIncomeYear.avg_income) - Number(firstIncomeYear.avg_income)) / Number(firstIncomeYear.avg_income)) * 100
+      : null
+
     const top5Expensive  = [...priceByRegion].sort((a, b) => Number(b.avg_price) - Number(a.avg_price)).slice(0, 5)
     const top5Affordable    = [...affordability].sort((a, b) => Number(a.affordability_index) - Number(b.affordability_index)).slice(0, 5)
     const top5LeastAfford   = [...affordability].sort((a, b) => Number(b.affordability_index) - Number(a.affordability_index)).slice(0, 5)
     const top5Income        = [...incomeByRegion].sort((a, b) => Number(b.avg_income) - Number(a.avg_income)).slice(0, 5)
 
-    return { firstYear, lastYear, priceChange, top5Expensive, top5Affordable, top5LeastAfford, top5Income }
-  }, [priceTrend, priceByRegion, affordability, incomeByRegion])
+    return { firstYear, lastYear, priceChange, firstIncomeYear, lastIncomeYear, incomeChange, top5Expensive, top5Affordable, top5LeastAfford, top5Income }
+  }, [priceTrend, priceByRegion, affordability, incomeByRegion, incomeTrend])
 
   if (!summary) return null
 
-  const { firstYear, lastYear, priceChange, top5Expensive, top5Affordable, top5LeastAfford, top5Income } = summary
-  const trendUp = priceChange >= 0
+  const { firstYear, lastYear, priceChange, firstIncomeYear, lastIncomeYear, incomeChange, top5Expensive, top5Affordable, top5LeastAfford, top5Income } = summary
+  const trendUp       = priceChange >= 0
+  const incomeUp      = incomeChange !== null && incomeChange >= 0
 
   return (
     <PageLayout breadcrumb="Reports">
       <section className="kpi-row">
         <KpiCard
-          label={`Price Change (${firstYear.year}–${lastYear.year})`}
+          label={`Food Avg. Price Change (${firstYear.year}–${lastYear.year})`}
           value={`${trendUp ? '+' : ''}${priceChange.toFixed(1)}%`}
           sub={`${peso(firstYear.avg_price)} → ${peso(lastYear.avg_price)}`}
           icon={trendUp ? '↑' : '↓'}
           accentClass={trendUp ? 'accent-red' : 'accent-green'}
+        />
+        <KpiCard
+          label={firstIncomeYear && lastIncomeYear ? `Income Increase (${firstIncomeYear.year}–${lastIncomeYear.year})` : 'Income Increase'}
+          value={incomeChange !== null ? `${incomeUp ? '+' : ''}${incomeChange.toFixed(1)}%` : '—'}
+          sub={firstIncomeYear && lastIncomeYear ? `₱${Number(firstIncomeYear.avg_income).toFixed(2)}k → ₱${Number(lastIncomeYear.avg_income).toFixed(2)}k` : ''}
+          icon={incomeUp ? '↑' : '↓'}
+          accentClass="accent-blue"
         />
         <KpiCard label="Most Expensive Region"  value={top5Expensive[0]?.region ?? '—'}  sub={top5Expensive[0]  ? peso(top5Expensive[0].avg_price) : ''}                                          icon="↑" accentClass="accent-red"   />
         <KpiCard label="Most Affordable Region" value={top5Affordable[0]?.region ?? '—'} sub={top5Affordable[0] ? `Index: ${Number(top5Affordable[0].affordability_index).toFixed(4)}` : ''}       icon="★" accentClass="accent-green" />

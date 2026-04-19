@@ -20,15 +20,17 @@ export default function RegionalAnalysis() {
 
   /* Merge price + income + affordability per region for the ranking table */
   const rankingData = useMemo(() => {
-    return priceByRegion.map((pr) => {
-      const aff = affordability.find((a) => a.region === pr.region)
-      return {
-        region:             pr.region,
-        avg_price:          Number(pr.avg_price),
-        avg_income:         aff ? Number(aff.avg_income_thousands) : null,
-        affordability_index: aff ? Number(aff.affordability_index) : null,
-      }
-    })
+    return priceByRegion
+      .map((pr) => {
+        const aff = affordability.find((a) => a.region === pr.region)
+        return {
+          region:              pr.region,
+          avg_price:           Number(pr.avg_price),
+          avg_income:          aff ? Number(aff.avg_income_thousands) : null,
+          affordability_index: aff ? Number(aff.affordability_index) : null,
+        }
+      })
+      .sort((a, b) => a.region.localeCompare(b.region))
   }, [priceByRegion, affordability])
 
   const regionKpis = useMemo(() => {
@@ -86,15 +88,15 @@ export default function RegionalAnalysis() {
         })()}
       </ChartCard>
 
-      <ChartCard title="Region Ranking" subtitle="Sorted by avg food price (highest first)">
+      <ChartCard title="Region Ranking" subtitle="Sorted by region name">
         <div className="ranking-table-wrap">
           <table className="ranking-table">
             <thead>
               <tr>
                 <th>#</th>
                 <th>Region</th>
-                <th>Avg Price</th>
-                <th>Avg Income</th>
+                <th>Avg Food Price</th>
+                <th>Avg Family Annual Income</th>
                 <th>Afford. Index</th>
               </tr>
             </thead>
