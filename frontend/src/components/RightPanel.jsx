@@ -6,6 +6,8 @@ export default function RightPanel({
   onRegionChange,
   onYearChange,
   insights,
+  showYearFilter = true,
+  showInsights   = true,
 }) {
   return (
     <aside className="right-panel">
@@ -24,33 +26,39 @@ export default function RightPanel({
           ))}
         </select>
 
-        <label className="filter-label" htmlFor="year-select">Year</label>
-        <select
-          id="year-select"
-          className="filter-select"
-          value={selectedYear}
-          onChange={(e) => onYearChange(e.target.value)}
-        >
-          {years.map((y) => (
-            <option key={y} value={y}>{y}</option>
-          ))}
-        </select>
+        {showYearFilter && (
+          <>
+            <label className="filter-label" htmlFor="year-select">Year</label>
+            <select
+              id="year-select"
+              className="filter-select"
+              value={selectedYear}
+              onChange={(e) => onYearChange(e.target.value)}
+            >
+              {years.map((y) => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+          </>
+        )}
       </section>
 
-      <section className="panel-section">
-        <h3 className="panel-title">Key Insights</h3>
-        <div className="insights-list">
-          {insights.map((ins) => (
-            <div key={ins.label} className="insight-item">
-              <span className={`insight-badge ${ins.type}`} />
-              <div className="insight-text">
-                <p className="insight-label">{ins.label}</p>
-                <p className="insight-value">{ins.value}</p>
+      {showInsights && insights.length > 0 && (
+        <section className="panel-section">
+          <h3 className="panel-title">Key Insights</h3>
+          <div className="insights-list">
+            {insights.map((ins) => (
+              <div key={ins.label} className="insight-item">
+                <span className={`insight-badge ${ins.type}`} />
+                <div className="insight-text">
+                  <p className="insight-label">{ins.label}</p>
+                  <p className="insight-value">{ins.value}</p>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      </section>
+            ))}
+          </div>
+        </section>
+      )}
     </aside>
   )
 }

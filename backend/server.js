@@ -168,6 +168,35 @@ app.get("/api/price-trend", async (_req, res) => {
   }
 });
 
+app.get("/api/income-by-region", async (_req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT region, AVG(avg_income_thousands::numeric) AS avg_income
+      FROM regional_income
+      GROUP BY region
+    `);
+    res.json(sortByRegionOrder(formatRows(result.rows)));
+  } catch (err) {
+    console.error("income-by-region error:", err);
+    res.status(500).json({ error: "Failed to load income by region", details: err.message });
+  }
+});
+
+app.get("/api/income-trend", async (_req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT year, AVG(avg_income_thousands::numeric) AS avg_income
+      FROM regional_income
+      GROUP BY year
+      ORDER BY year ASC
+    `);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("income-trend error:", err);
+    res.status(500).json({ error: "Failed to load income trend", details: err.message });
+  }
+});
+
 app.listen(3001, () => {
   console.log("API running on http://localhost:3001");
 });

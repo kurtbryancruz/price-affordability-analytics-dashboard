@@ -1,18 +1,19 @@
+import { NavLink } from 'react-router-dom'
+
 const NAV_GROUPS = [
   {
     label: 'Dashboards',
     items: [
-      { label: 'Overview',          active: true  },
-      { label: 'Price Trends',      active: false },
-      { label: 'Regional Analysis', active: false },
-      { label: 'Affordability',     active: false },
+      { label: 'Overview',          path: '/overview'      },
+      { label: 'Income Analysis',   path: '/income'        },
+      { label: 'Regional Analysis', path: '/regional'      },
+      { label: 'Affordability',     path: '/affordability' },
     ],
   },
   {
     label: 'Reports',
     items: [
-      { label: 'Annual Summary', active: false },
-      { label: 'Export Data',    active: false },
+      { label: 'Reports', path: '/reports' },
     ],
   },
 ]
@@ -34,15 +35,14 @@ export default function Sidebar() {
           <div key={group.label} className="nav-group">
             <span className="nav-group-label">{group.label}</span>
             {group.items.map((item) => (
-              <a
-                key={item.label}
-                href="#"
-                className={`nav-item${item.active ? ' active' : ''}`}
-                onClick={(e) => e.preventDefault()}
+              <NavLink
+                key={item.path}
+                to={item.path}
+                className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}
               >
                 <span className="nav-icon" aria-hidden="true" />
                 {item.label}
-              </a>
+              </NavLink>
             ))}
           </div>
         ))}

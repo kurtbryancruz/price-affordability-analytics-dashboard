@@ -569,3 +569,167 @@
   .content-main { padding: 16px; }
   .kpi-row { grid-template-columns: 1fr 1fr; gap: 12px; }
 }
+
+/* ─────────────────────────────────────────────────────────────
+   Ranking table (Regional Analysis)
+───────────────────────────────────────────────────────────── */
+.ranking-table-wrap {
+  overflow-x: auto;
+}
+
+.ranking-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+.ranking-table th {
+  text-align: left;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  padding: 0 12px 10px 0;
+  white-space: nowrap;
+}
+
+.ranking-table td {
+  padding: 8px 12px 8px 0;
+  color: var(--text-secondary);
+  border-top: 1px solid var(--divider-light);
+  white-space: nowrap;
+}
+
+.ranking-table tr.row-dim td {
+  opacity: 0.35;
+}
+
+.rank-num {
+  color: var(--text-muted);
+  font-size: 11px;
+  width: 24px;
+}
+
+.rank-region {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.afford-badge {
+  font-size: 11.5px;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: 20px;
+}
+.afford-badge.badge-green { background: rgba(16,185,129,0.1); color: var(--green); }
+.afford-badge.badge-red   { background: rgba(239,68,68,0.1);  color: var(--red); }
+
+/* ─────────────────────────────────────────────────────────────
+   Explanation card (Affordability page)
+───────────────────────────────────────────────────────────── */
+.explanation-card {
+  background: var(--bg-surface);
+  border-radius: var(--r-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.explanation-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.explanation-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.explanation-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.expl-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+}
+
+.expl-value {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.expl-value code {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 11.5px;
+  background: var(--bg-hover);
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: var(--accent);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Report list (Reports page)
+───────────────────────────────────────────────────────────── */
+.report-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.report-list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--divider-light);
+}
+.report-list-item:last-child { border-bottom: none; }
+
+.report-rank {
+  font-size: 11px;
+  color: var(--text-muted);
+  min-width: 28px;
+  font-variant-numeric: tabular-nums;
+}
+
+.report-region {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.report-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.report-value.red   { color: var(--red); }
+.report-value.green { color: var(--green); }
+.report-value.blue  { color: var(--accent); }
+
+.report-bar-wrap {
+  flex: 1;
+  height: 6px;
+  background: var(--bg-hover);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.report-bar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
