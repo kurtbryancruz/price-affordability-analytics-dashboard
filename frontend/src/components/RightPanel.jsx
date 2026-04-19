@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 export default function RightPanel({
   regions,
   years,
@@ -9,56 +11,69 @@ export default function RightPanel({
   showYearFilter = true,
   showInsights   = true,
 }) {
+  const [filtersOpen, setFiltersOpen] = useState(false)
+
   return (
     <aside className="right-panel">
-      <section className="panel-section">
-        <h3 className="panel-title">Filters</h3>
+      <button
+        className="filters-toggle"
+        onClick={() => setFiltersOpen((o) => !o)}
+        aria-expanded={filtersOpen}
+      >
+        Filters
+        <span className={`filters-toggle-arrow${filtersOpen ? ' open' : ''}`}>▼</span>
+      </button>
 
-        <label className="filter-label" htmlFor="region-select">Region</label>
-        <select
-          id="region-select"
-          className="filter-select"
-          value={selectedRegion}
-          onChange={(e) => onRegionChange(e.target.value)}
-        >
-          {regions.map((r) => (
-            <option key={r} value={r}>{r}</option>
-          ))}
-        </select>
-
-        {showYearFilter && (
-          <>
-            <label className="filter-label" htmlFor="year-select">Year</label>
-            <select
-              id="year-select"
-              className="filter-select"
-              value={selectedYear}
-              onChange={(e) => onYearChange(e.target.value)}
-            >
-              {years.map((y) => (
-                <option key={y} value={y}>{y}</option>
-              ))}
-            </select>
-          </>
-        )}
-      </section>
-
-      {showInsights && insights.length > 0 && (
+      <div className={`filters-content${filtersOpen ? ' open' : ''}`}>
         <section className="panel-section">
-          <h3 className="panel-title">Key Insights</h3>
-          <div className="insights-list">
-            {insights.map((ins) => (
-              <div key={ins.label} className="insight-item">
-                <span className={`insight-badge ${ins.type}`} />
-                <div className="insight-text">
-                  <p className="insight-label">{ins.label}</p>
-                  <p className="insight-value">{ins.value}</p>
-                </div>
-              </div>
+          <h3 className="panel-title">Filters</h3>
+
+          <label className="filter-label" htmlFor="region-select">Region</label>
+          <select
+            id="region-select"
+            className="filter-select"
+            value={selectedRegion}
+            onChange={(e) => onRegionChange(e.target.value)}
+          >
+            {regions.map((r) => (
+              <option key={r} value={r}>{r}</option>
             ))}
-          </div>
+          </select>
+
+          {showYearFilter && (
+            <>
+              <label className="filter-label" htmlFor="year-select">Year</label>
+              <select
+                id="year-select"
+                className="filter-select"
+                value={selectedYear}
+                onChange={(e) => onYearChange(e.target.value)}
+              >
+                {years.map((y) => (
+                  <option key={y} value={y}>{y}</option>
+                ))}
+              </select>
+            </>
+          )}
         </section>
-      )}
+
+        {showInsights && insights.length > 0 && (
+          <section className="panel-section">
+            <h3 className="panel-title">Key Insights</h3>
+            <div className="insights-list">
+              {insights.map((ins) => (
+                <div key={ins.label} className="insight-item">
+                  <span className={`insight-badge ${ins.type}`} />
+                  <div className="insight-text">
+                    <p className="insight-label">{ins.label}</p>
+                    <p className="insight-value">{ins.value}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
     </aside>
   )
 }

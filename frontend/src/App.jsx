@@ -9,13 +9,14 @@ import Reports from './pages/Reports'
 import './App.css'
 
 function AppShell() {
-  const { loading, error } = useAppData()
+  const { loading, error, sidebarOpen, setSidebarOpen } = useAppData()
 
   if (loading) return <div className="full-screen-status">Loading dashboard…</div>
   if (error)   return <div className="full-screen-status error">{error}</div>
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell${sidebarOpen ? ' sidebar-open' : ''}`}>
+      <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />
       <Sidebar />
       <div className="main-area">
         <Routes>

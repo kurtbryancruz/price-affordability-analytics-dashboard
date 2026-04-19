@@ -1,18 +1,20 @@
 import { useAppData } from '../context/AppDataContext'
 
 export default function PageLayout({ breadcrumb, children, rightPanel }) {
-  const { dark, toggleDark } = useAppData()
+  const { dark, toggleDark, toggleSidebar } = useAppData()
 
   return (
     <>
       <header className="top-bar">
         <div className="top-bar-left">
+          <button className="hamburger" onClick={toggleSidebar} aria-label="Toggle navigation">
+            <span /><span /><span />
+          </button>
           <span className="breadcrumb-muted">Dashboards</span>
           <span className="breadcrumb-sep">/</span>
           <span className="breadcrumb-active">{breadcrumb}</span>
         </div>
         <div className="top-bar-right">
-          <span className="date-badge">Today</span>
           <button
             className="theme-toggle"
             onClick={toggleDark}

@@ -25,6 +25,8 @@ function useTheme() {
 
 export function AppDataProvider({ children }) {
   const [dark, toggleDark] = useTheme()
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const toggleSidebar = () => setSidebarOpen((o) => !o)
 
   const [kpis, setKpis]                   = useState(null)
   const [priceByRegion, setPriceByRegion] = useState([])
@@ -118,6 +120,7 @@ export function AppDataProvider({ children }) {
   return (
     <AppDataContext.Provider value={{
       dark, toggleDark,
+      sidebarOpen, setSidebarOpen, toggleSidebar,
       kpis, priceByRegion, priceTrend, affordability, incomeByRegion, incomeTrend, categoryBreakdown,
       loading, error,
       selectedRegion, setSelectedRegion,
